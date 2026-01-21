@@ -70,10 +70,8 @@ export class SearchResortComponent implements OnInit {
     this.firstResort = '';
     this.previousResort = this.authService.getSearchData('resort');
 
-    const currentDate = new Date();
-    // Set minimum check-in date to tomorrow for all resorts
-    currentDate.setDate(currentDate.getDate() + 1);
-    this.minDate = currentDate;
+    // Set minimum check-in date based on selected resort
+    this.setMinDateBasedOnResort();
   }
   ngOnInit(): void {}
 
@@ -87,11 +85,21 @@ export class SearchResortComponent implements OnInit {
 
   setMinDate(){
     this.selectionChanged = true
+    this.setMinDateBasedOnResort();
+  }
 
+  setMinDateBasedOnResort() {
     const currentDate = new Date();
-    // Set minimum check-in date to tomorrow for all resorts
-    currentDate.setDate(currentDate.getDate() + 1);
-    this.minDate = currentDate;
+    
+    // For Vanavihari: allow same-day booking (today)
+    // For Jungle Star: allow next-day booking only (tomorrow)
+    if (this.selectedResort === 'Vanavihari, Maredumilli') {
+      this.minDate = currentDate;
+    } else {
+      // Jungle Star or any other resort - next day booking
+      currentDate.setDate(currentDate.getDate() + 1);
+      this.minDate = currentDate;
+    }
   }
 
   onCancel() {
